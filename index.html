@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="bower_components/snap.svg/dist/snap.svg.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!--<input type="text" value="0" id="count" />-->
+
+    <script>
+//        var list = ['Theoretische Philosophie', 'Praktische Philosophie'];
+        var list = ['Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik'];
+
+        var w = 600,    // width
+            h = 600,    // height
+            r = w,      // radius base
+            mx = w/2,   // center width
+            my = h/2;   // center height
+
+        var s = Snap(w, h);
+        // Lets create big circle in the middle:
+        var bigCircle = s.circle(mx, my, r/2).attr({fill:'#f0f0f0'});
+        // By default its black, lets change its attributes
+
+        var textGroup   = s.group(),
+            listLength  = list.length,
+            listStep    = 360 / listLength,
+            padding     = w / 10;
+
+        list.forEach(function(e, i){
+            var degree = listStep * i;
+            var height = 20,
+                tx = mx + padding,
+                ty = my + height/3.2;
+
+            var t = s
+                    .text(tx, ty, i + ' ' + e)
+                    .transform('r'+degree+' '+ mx +' '+ my)
+                    .attr({'font-size': height});
+
+            t.appendTo(textGroup);
+        });
+
+
+//        var i = document.getElementById('count');
+
+        if (document.addEventListener) {
+            document.addEventListener("mousewheel", mouseWheelHandler, false);
+            document.addEventListener("DOMMouseScroll", mouseWheelHandler, false);
+        } else {
+            document.attachEvent("onmousewheel", mouseWheelHandler);
+        }
+
+        currentWheelState = 0;
+        currentlyAnimating = false;
+
+        function mouseWheelHandler(e) {
+
+            if (currentlyAnimating) return false;
+
+            // cross-browser wheel delta
+            var e = window.event || e; // old IE support
+            var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+            Snap.animate(currentWheelState * listStep, (currentWheelState + delta) * listStep, function(val){
+                currentlyAnimating = true;
+                textGroup.transform('r'+val+' '+ mx +' '+ my);
+            }, 200, mina.easeout(), function(){
+                currentlyAnimating = false;
+            });
+
+            currentWheelState = currentWheelState + delta;
+
+            return false;
+        }
+
+    </script>
+</body>
+</html>
