@@ -20,9 +20,9 @@
         var list = ['Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik'];
 
         var w = 600,    // width
-            h = 600,    // height
+            h = documentHeight(),    // height
             r = w,      // radius base
-            mx = w/2,   // center width
+            mx = 0,   // center width
             my = h/2;   // center height
 
         var s = Snap(w, h);
@@ -62,6 +62,8 @@
         currentWheelState = 0;
         currentlyAnimating = false;
 
+
+
         function mouseWheelHandler(e) {
 
             if (currentlyAnimating) return false;
@@ -80,6 +82,16 @@
             currentWheelState = currentWheelState + delta;
 
             return false;
+        }
+
+        function documentHeight() {
+            return Math.max(
+                    document.documentElement.clientHeight,
+                    document.body.scrollHeight,
+                    document.documentElement.scrollHeight,
+                    document.body.offsetHeight,
+                    document.documentElement.offsetHeight
+            );
         }
 
     </script>
