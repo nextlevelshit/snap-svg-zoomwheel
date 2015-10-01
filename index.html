@@ -3,11 +3,21 @@
 <head>
     <meta charset="utf-8" />
     <script src="bower_components/snap.svg/dist/snap.svg.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
     <style>
         body, html {
             height: 100%;
             width: 100%;
             overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        text {
+            cursor: pointer;
+        }
+
+        text:hover {
+            fill: rgba(0,0,0,0.6);
         }
     </style>
 </head>
@@ -17,36 +27,51 @@
 
     <script>
 //        var list = ['Theoretische Philosophie', 'Praktische Philosophie'];
-        var list = ['Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik'];
+        var list = ['Blues-Stil‎', 'Country-Musik-Stil‎', 'Dark Music‎', 'Stilrichtung Disco‎', 'Stil der elektronischen Musik‎', 'Folk-Genre‎', 'Stilrichtung des Funk‎', 'Hip-Hop-Musiksubgenre‎', 'Jazz-Stil‎', 'Stilrichtung der Lateinamerikanischen Musik', 'Stilrichtung des Metal‎', 'Stilrichtung der Popmusik‎', 'Stilrichtung des Punk‎', 'Stilrichtung des Reggae‎', 'Stilrichtung der Rockmusik‎', 'Stilrichtung des Rock ’n’ Roll', 'Stilrichtung des Ska', 'Genre der traditionellen Musik‎'];
+//        var list = ['Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik', 'Theoretische Philosophie', 'Praktische Philosophie', 'Metaphysik', 'Ästhetik'];
 
-        var w = 600,    // width
-            h = documentHeight(),    // height
+
+        var w = getDocumentWidth(),    // width
+            h = getDocumentHeight(),    // height
             r = w,      // radius base
             mx = 0,   // center width
             my = h/2;   // center height
 
         var s = Snap(w, h);
         // Lets create big circle in the middle:
-        var bigCircle = s.circle(mx, my, r/2).attr({fill:'#f0f0f0'});
+        var gradientCircle = s.circle(mx, my, r).attr({fill: "r()#fff-#000"});
+        var gradientBackground = s.rect(0,0,w,h).attr({fill: "l(0,0,0,1)#000-#fff-#000"});
         // By default its black, lets change its attributes
+
+        var gradientGroup = s.group(gradientCircle, gradientBackground);
 
         var textGroup   = s.group(),
             listLength  = list.length,
             listStep    = 360 / listLength,
-            padding     = w / 10;
+            padding     = w / 3;
+
+        var height = w/26,
+            tx = mx + padding,
+            ty = my + height/3.2;
+
+        s.text(mx + w / 40, ty, 'Musik')
+         .attr({'font-size': height});
 
         list.forEach(function(e, i){
             var degree = listStep * i;
-            var height = 20,
-                tx = mx + padding,
-                ty = my + height/3.2;
-
             var t = s
-                    .text(tx, ty, i + ' ' + e)
+                    .text(tx, ty, e)
                     .transform('r'+degree+' '+ mx +' '+ my)
-                    .attr({'font-size': height});
+                    .attr({'font-size': height})
+                    .mouseover(function(e){
+                        return;
+                    });
 
             t.appendTo(textGroup);
+        });
+
+        textGroup.attr({
+//            mask: gradientCircle
         });
 
 
@@ -69,13 +94,13 @@
             if (currentlyAnimating) return false;
 
             // cross-browser wheel delta
-            var e = window.event || e; // old IE support
+//            var e = window.event || e; // old IE support
             var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 
             Snap.animate(currentWheelState * listStep, (currentWheelState + delta) * listStep, function(val){
                 currentlyAnimating = true;
                 textGroup.transform('r'+val+' '+ mx +' '+ my);
-            }, 200, mina.easeout(), function(){
+            }, 300, mina.bounce(), function(){
                 currentlyAnimating = false;
             });
 
@@ -84,13 +109,21 @@
             return false;
         }
 
-        function documentHeight() {
+        function getDocumentHeight() {
             return Math.max(
                     document.documentElement.clientHeight,
-                    document.body.scrollHeight,
-                    document.documentElement.scrollHeight,
+//                    document.body.scrollHeight,
+//                    document.documentElement.scrollHeight,
                     document.body.offsetHeight,
                     document.documentElement.offsetHeight
+            );
+        }
+
+        function getDocumentWidth() {
+            return Math.max(
+                    document.documentElement.clientWidth,
+                    document.body.offsetWidth,
+                    document.documentElement.offsetWidth
             );
         }
 
